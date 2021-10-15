@@ -1,11 +1,12 @@
-import { Layout, Spin } from 'antd';
-import React, { useMemo, useState } from 'react';
-import { decodeMetadata, useConnection, useStore } from '@oyster/common';
+import { Layout, Spin, Button } from 'antd';
+import React, { useCallback, useMemo, useState } from 'react';
+import { decodeMetadata, useConnection, useStore, useWalletModal } from '@oyster/common';
 import { useMeta, useRemoteStorage } from '../../contexts';
 import { SetupView } from './setup';
 import { Row, Col } from 'antd';
 import { Post } from '../../components/Post';
 import { PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const { Content } = Layout;
 
@@ -15,6 +16,12 @@ export const HomeView = () => {
   const { remoteStorage, isReady: isRemoteStorageReady } = useRemoteStorage();
   const [posts, setPosts] = useState([] as any);
   const connection = useConnection();
+  const wallet = useWallet();
+  const { setVisible } = useWalletModal();
+  const connect = useCallback(
+    () => (wallet.wallet ? wallet.connect().catch() : setVisible(true)),
+    [wallet.wallet, wallet.connect, setVisible],
+  );
 
   const getCommunityName = async id => {
     console.log(`Get community info of ${id}`);
@@ -78,6 +85,12 @@ export const HomeView = () => {
             ))}
           </Col>
         </Content>
+      ) : !wallet.connected ? (
+        <p>
+          <Button type="primary" className="app-btn" onClick={connect}>
+            Connect
+          </Button>{' '}
+        </p>
       ) : (
         <Spin></Spin>
       )}

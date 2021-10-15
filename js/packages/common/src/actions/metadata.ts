@@ -99,7 +99,7 @@ export interface IMetadataExtension {
   };
 
   subscription?: string;
-  subscriptionConfig?: object;
+  subscriptionConfig: object;
 }
 
 export class MasterEditionV1 {
