@@ -125,7 +125,7 @@ export const ArtCreateView = () => {
       env,
       files,
       metadata,
-      attributes.subscriptionConfig,
+      attributes.subscriptionConfig as any,
       attributes.properties?.maxSupply,
     );
     if (_nft) setNft(_nft);
@@ -746,14 +746,13 @@ const InfoStep = (props: {
                         props.attributes.subscriptionConfig,
                       )}`,
                     );
+                    const { period_type = 'months' } = props.attributes.subscriptionConfig as any;
                     props.setAttributes({
                       ...props.attributes,
                       subscriptionConfig: {
                         ...props.attributes.subscriptionConfig,
                         period_amount: val,
-                        period_type:
-                          props.attributes.subscriptionConfig.period_type ||
-                          'months',
+                        period_type,
                       },
                     });
                   }}

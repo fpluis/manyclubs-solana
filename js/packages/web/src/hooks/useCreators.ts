@@ -10,6 +10,10 @@ export const useCreators = (creators?: Artist[]) => {
     if (!hasLoaded && isReady && creators && creators.length > 0) {
       const withExternalProps = await Promise.all(
         creators.map(async ({ address, ...props }) => {
+          if (!address) {
+            return { address, ...props };
+          }
+
           try {
             const externalProps = await remoteStorage.getCreator(address);
             return { ...props, ...externalProps, address,  };

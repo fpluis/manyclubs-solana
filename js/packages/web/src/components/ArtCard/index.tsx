@@ -48,19 +48,25 @@ export const ArtCard = (props: ArtCardProps) => {
   } = props;
   const art = useArt(pubkey);
   creators = art?.creators || creators || [];
-  const [loadedCreators, setLoadedCreators] = useState(creators);
+  const [loadedCreators, setLoadedCreators] = useState<any[]>(creators);
   const { isReady: isRemoteStorageReady, remoteStorage } = useRemoteStorage();
 
   useMemo(async () => {
     if (isRemoteStorageReady && creators && creators.length > 0) {
       const loadedCreators = await Promise.all(
-        creators.map(({ address }) => remoteStorage.getCreator(address)),
+        creators.map(({ address }) => {
+          if (address) {
+            return remoteStorage.getCreator(address);
+          }
+
+          return {};
+        }),
       );
       setLoadedCreators(loadedCreators);
       console.log(
-        `Loaded creators for community ${pubkey} with creators ${JSON.stringify(creators)} ${JSON.stringify(
-          loadedCreators,
-        )}`,
+        `Loaded creators for community ${pubkey} with creators ${JSON.stringify(
+          creators,
+        )} ${JSON.stringify(loadedCreators)}`,
       );
     }
   }, [isRemoteStorageReady, art?.creators]);

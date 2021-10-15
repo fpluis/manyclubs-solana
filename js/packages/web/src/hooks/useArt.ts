@@ -154,7 +154,12 @@ export const useArt = (key?: StringPublicKey) => {
   } as Art);
 
   useMemo(async () => {
-    if (!editions || !masterEditions || !key || artMeta.uri.length > 0) {
+    if (
+      !editions ||
+      !masterEditions ||
+      !key ||
+      (artMeta && artMeta.uri && artMeta.uri.length > 0)
+    ) {
       return;
     }
 
